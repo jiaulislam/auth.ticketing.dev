@@ -1,10 +1,10 @@
-import {ValidationError} from "express-validator";
+import {FieldValidationError} from "express-validator";
 import status from "http-status-codes";
 
 class RequestValidationError extends Error {
   public statusCode: number;
 
-  constructor(private errors: ValidationError[]) {
+  constructor(public errors: FieldValidationError[]) {
     super();
     this.statusCode = status.BAD_REQUEST;
 
