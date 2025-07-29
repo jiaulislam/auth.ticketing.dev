@@ -8,8 +8,8 @@ const app = express();
 
 
 app.use(json())
-app.use("/api/v1/users", userRouter);
-app.use("/api/v1", authRouter); // this must be after userRouter to avoid conflicts
+app.use("/api/v1/auth", userRouter);
+app.use("/api/v1/auth", authRouter); // this must be after userRouter to avoid conflicts
 
 
 app.listen(process.env.SERVER_PORT || 3000, () => {

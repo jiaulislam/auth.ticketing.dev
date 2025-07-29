@@ -1,19 +1,23 @@
 import express, {Request, Response} from "express";
 import status from "http-status-codes";
 
-import {validationResult, body} from "express-validator";
+import {body, validationResult} from "express-validator";
 
 const router = express.Router();
 
 router.post("/login",
     [
-        body("username").notEmpty().withMessage("Must be a valid email address"),
+        body("email").isEmail().withMessage("Must be a valid email address"),
         body("password").notEmpty().withMessage("Password is required"),
     ],
     (req: Request, res: Response
     ) => {
-    const { username, password } = req.body;
-    if (username === "test" && password === "password") {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(status.BAD_REQUEST).json({ errors: errors.array()});
+    }
+    const { email, password } = req.body;
+    if (email === "test@test.com" && password === "password") {
         res.send("Login successful");
     } else {
         res.status(status.BAD_REQUEST).send("Invalid credentials");
