@@ -5,6 +5,7 @@ import { json } from 'body-parser';
 import { authRouter, userRouter } from './routes';
 // Importing middlewares
 import { errorhandler } from './middlewares';
+import {NotFoundError} from "./errors";
 
 const app = express();
 
@@ -12,6 +13,10 @@ app.use(json());
 app.use('/api/v1/auth', userRouter);
 app.use('/api/v1/auth', authRouter); // this must be after userRouter to avoid conflicts
 
+
+app.all('*', (req, res) => {
+    throw new NotFoundError();
+})
 // Error handling middleware
 app.use(errorhandler);
 
