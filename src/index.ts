@@ -20,6 +20,6 @@ app.all('*', (req, res) => {
 // Error handling middleware
 app.use(errorhandler);
 
-app.listen(process.env.SERVER_PORT || 3000, () => {
-  console.log(`Auth Server is running on port ${process.env.SERVER_PORT || 3000}`);
+app.listen(process.env.SERVER_PORT || 4000, () => {
+  console.log(`Auth Server is running on port ${process.env.SERVER_PORT || 4000}`);
 });
