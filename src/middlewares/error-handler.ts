@@ -1,19 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import status from 'http-status-codes';
 
-import { RequestValidationError } from '../errors';
+import {CustomError} from '../errors/base-error';
 
-export const errorhandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
-  if (err instanceof RequestValidationError) {
-    const formatterErrors = err.errors.map(error => ({
-      message: error.msg,
-      field: error.path,
-    }));
+export const errorhandler = (err: Error, _req: Request, res: Response, next: NextFunction) => {
+  if (err instanceof CustomError) {
     return res.status(err.statusCode).json({
-      message: 'Validation Error',
-        errors: formatterErrors,
+      message: err.message,
+        errors: err.serializeErrors(),
     });
-
   }
   res.status(status.INTERNAL_SERVER_ERROR).json({
     message: 'Internal Server Error',

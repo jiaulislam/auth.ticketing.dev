@@ -1,8 +1,8 @@
 import express, { Request, Response } from 'express';
 import status from 'http-status-codes';
 
-import { body, validationResult } from 'express-validator';
-import {RequestValidationError} from "../errors";
+import {body, FieldValidationError, validationResult} from 'express-validator';
+import {DatabaseError, RequestValidationError} from "../errors";
 
 const router = express.Router();
 
@@ -15,13 +15,12 @@ router.post(
   (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-     throw new RequestValidationError(errors.array());
-    }
+      throw new RequestValidationError(errors.array().filter((err): err is FieldValidationError => err.type === 'field'));    }
     const { email, password } = req.body;
     if (email === 'test@test.com' && password === 'password') {
       res.send('Login successful');
     } else {
-      res.status(status.BAD_REQUEST).send('Invalid credentials');
+      throw new DatabaseError();
     }
   },
 );
