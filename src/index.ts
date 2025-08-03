@@ -1,33 +1,21 @@
-import express from 'express';
-import { json } from 'body-parser';
-import 'express-async-errors';
-import cookieSession from 'cookie-session';
-
-// Importing routes
-import { authRouter, userRouter } from './routes';
-// Importing middlewares
-import { errorhandler } from './middlewares';
-import { NotFoundError } from './errors';
-
-const app = express();
 
 
-// Middleware setup
-app.use(json());
-app.set('trust proxy', true);
-app.use(
-    cookieSession({ name: 'session', signed: false, secure: process.env.NODE_ENV === 'production' }),
-);
-app.use(errorhandler);
+import {app} from "./app";
 
-// Importing routes
-app.use('/api/v1/auth', userRouter);
-app.use('/api/v1/auth', authRouter); // this must be after userRouter to avoid conflicts
 
-app.all('*', (_req, _res) => {
-  throw new NotFoundError();
-});
+const start = async () => {
+    if (!process.env.JWT_SECRET) {
+        throw new Error('JWT_KEY must be defined');
+    }
+    if (!process.env.DATABASE_URL) {
+        throw new Error('DATABASE_URL must be defined');
+    }
+  app.listen(process.env.SERVER_PORT || 4000, () => {
+    console.log(`Auth Server is running on port ${process.env.SERVER_PORT || 4000}`);
+  });
+}
 
-app.listen(process.env.SERVER_PORT || 4000, () => {
-  console.log(`Auth Server is running on port ${process.env.SERVER_PORT || 4000}`);
-});
+start(); // eslint-disable-line
+
+
+

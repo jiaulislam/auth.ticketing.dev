@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import status from 'http-status-codes';
 
 import { body, FieldValidationError, validationResult } from 'express-validator';
-import { RequestValidationError, AlreadyExists, NotAuthenticatedError } from '../errors';
+import { RequestValidationError, AlreadyExistsError, NotAuthenticatedError } from '../errors';
 import { UserService } from '../service/user';
 import { PasswordService } from '../service/password';
 import { generateToken } from '../service/jwt';
@@ -69,7 +69,7 @@ router.post(
     const existingUser = await userService.getUserByEmail(email);
 
     if (existingUser) {
-      throw new AlreadyExists('User with this email already exists');
+      throw new AlreadyExistsError('User with this email already exists');
     }
     const user = {
       email,
