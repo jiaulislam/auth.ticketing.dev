@@ -2,9 +2,10 @@ import express, { Request, Response } from 'express';
 import status from 'http-status-codes';
 
 import { body, FieldValidationError, validationResult } from 'express-validator';
-import {DatabaseError, RequestValidationError, AlreadyExists} from '../errors';
-import {UserService} from "../service/user";
-import {PasswordService} from "../service/password";
+import { RequestValidationError, AlreadyExists, NotAuthenticatedError } from '../errors';
+import { UserService } from '../service/user';
+import { PasswordService } from '../service/password';
+import { generateToken } from '../service/jwt';
 
 const router = express.Router();
 
@@ -16,7 +17,7 @@ router.post(
     body('email').isEmail().withMessage('Must be a valid email address'),
     body('password').notEmpty().withMessage('Password is required'),
   ],
-  (req: Request, res: Response) => {
+  async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       throw new RequestValidationError(
@@ -24,11 +25,23 @@ router.post(
       );
     }
     const { email, password } = req.body;
-    if (email === 'test@test.com' && password === 'password') {
-      res.send('Login successful');
-    } else {
-      throw new DatabaseError();
+
+    const user = await userService.getUserByEmail(email);
+
+    if (!user) {
+      throw new NotAuthenticatedError();
     }
+
+    if (!(await PasswordService.compare(user.password, password))) {
+      throw new NotAuthenticatedError();
+    }
+    req.session = {
+      jwt: generateToken(user.id, user.email),
+    };
+    res.status(status.OK).json({
+      message: 'Login successful',
+      user: userService.serializeUser(user),
+    });
   },
 );
 
@@ -55,13 +68,13 @@ router.post(
     const existingUser = await userService.getUserByEmail(email);
 
     if (existingUser) {
-        throw new AlreadyExists('User with this email already exists');
+      throw new AlreadyExists('User with this email already exists');
     }
     const user = {
       email,
-        password: await PasswordService.toHash(password),
+      password: await PasswordService.toHash(password),
     };
-     const createdUser = await userService.createUser(user);
+    const createdUser = await userService.createUser(user);
 
     res.status(status.CREATED).json(userService.serializeUser(createdUser));
   },
