@@ -48,7 +48,7 @@ router.post(
 router.post('/logout', (req, res) => {
   // Here you would typically clear the session or token
   req.session = null;
-  res.status(status.OK).send('Logout successful');
+  res.status(status.OK).json({message: 'Logout successful'});
 });
 
 router.post(
