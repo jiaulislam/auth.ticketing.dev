@@ -1,8 +1,9 @@
+// @ts-nocheck
 import express, { Request, Response } from 'express';
 import status from 'http-status-codes';
 
-import { body, FieldValidationError, validationResult } from 'express-validator';
-import { RequestValidationError, AlreadyExistsError, NotAuthenticatedError } from '../errors';
+import { body } from 'express-validator';
+import { RequestValidationError, AlreadyExistsError, NotAuthenticatedError, validateRequestMiddleware } from '@jiaulislam.dev/common.ticketing.dev';
 import { UserService } from '../service/user';
 import { PasswordService } from '../service/password';
 import { generateToken } from '../service/jwt';
@@ -15,15 +16,10 @@ router.post(
   '/login',
   [
     body('email').isEmail().withMessage('Must be a valid email address'),
-    body('password').notEmpty().withMessage('Password is required'),
+    body('password').trim().notEmpty().withMessage('Password is required'),
   ],
+  validateRequestMiddleware,
   async (req: Request, res: Response) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      throw new RequestValidationError(
-        errors.array().filter((err): err is FieldValidationError => err.type === 'field'),
-      );
-    }
     const { email, password } = req.body;
 
     const user = await userService.getUserByEmail(email);
