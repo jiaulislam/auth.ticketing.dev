@@ -454,3 +454,4 @@ pyrightconfig.json
 
 
 # End of https://www.toptal.com/developers/gitignore/api/node,python,pycharm+all,webstorm+all
+/generated/prisma
