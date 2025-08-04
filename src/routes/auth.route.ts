@@ -1,4 +1,3 @@
-// @ts-nocheck
 import express, { Request, Response } from 'express';
 import status from 'http-status-codes';
 
