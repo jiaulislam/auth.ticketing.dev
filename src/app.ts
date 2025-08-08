@@ -13,8 +13,9 @@ app.use(
   cookieSession({ name: 'session', signed: false, secure: process.env.NODE_ENV === 'production' }),
 );
 
-app.use('/api/v1/auth', userRouter);
+app.use('/api/v1/users', userRouter);
 app.use('/api/v1/auth', authRouter); // this must be after userRouter to avoid conflicts
+
 app.use(errorHandlerMiddleware);
 
 export { app };
