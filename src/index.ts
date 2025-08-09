@@ -2,7 +2,7 @@ import { app } from "./app";
 
 
 const start = async () => {
-  if (!process.env.JWT_SECRET) {
+  if (!process.env.JWT_KEY) {
     throw new Error('JWT_KEY must be defined');
   }
   if (!process.env.DATABASE_URL) {
