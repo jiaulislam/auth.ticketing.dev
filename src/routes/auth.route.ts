@@ -7,10 +7,10 @@ import {
   AlreadyExistsError,
   NotAuthenticatedError,
   validateRequestMiddleware,
-} from '@jiaulislam.dev/common.ticketing.dev';
-import { UserService } from '../service/user';
-import { PasswordService } from '../service/password';
-import { generateToken } from '../service/jwt';
+} from '@jiaul.islam/common.ticketing.dev';
+import { UserService } from '../service/user.service';
+import { PasswordService } from '../service/password.service';
+import { generateToken } from '../service/jwt.service';
 
 const router = express.Router();
 
