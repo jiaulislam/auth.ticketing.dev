@@ -56,26 +56,35 @@ Enterprise-grade authentication microservice for the Ticketing.dev platform. Bui
 ### Installation
 
 1. Clone the repository:
+
    ```sh
    git clone <repo-url> auth-service
    cd auth-service
    ```
+
 2. Install dependencies:
+
    ```sh
    npm install
    # or
    yarn install
    ```
+
 3. Copy the example environment file and configure variables:
+
    ```sh
    cp .env.example .env
    # Edit .env as needed
    ```
+
 4. Run database migrations:
+
    ```sh
    npx prisma migrate deploy
    ```
+
 5. Start the service:
+
    ```sh
    npm run dev
    # or
