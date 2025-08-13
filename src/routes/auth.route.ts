@@ -26,7 +26,7 @@ router.post(
   async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
-    const user = await userService.getUserByEmail(email);
+    const user = await userService.findUnique({ where: { email } });
 
     if (!user) {
       throw new NotAuthenticatedError();
@@ -66,7 +66,7 @@ router.post(
         { type: 'field', location: 'body', msg: 'Passwords do not match', path: 'confirmPassword' },
       ]);
     }
-    const existingUser = await userService.getUserByEmail(email);
+    const existingUser = await userService.findUnique({ where: { email } });
 
     if (existingUser) {
       throw new AlreadyExistsError('User with this email already exists');
@@ -75,7 +75,7 @@ router.post(
       email,
       password: await PasswordService.toHash(password),
     };
-    const createdUser = await userService.createUser(user);
+    const createdUser = await userService.create({ data: user });
 
     res.status(status.CREATED).json(userService.serializeUser(createdUser));
   },
