@@ -1,7 +1,7 @@
 import express from 'express';
 import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
-import { errorHandlerMiddleware } from '@jiaulislam.dev/common.ticketing.dev';
+import { errorHandlerMiddleware } from '@jiaul.islam/common.ticketing.dev';
 
 // routes
 import { authRouter, userRouter } from './routes';
