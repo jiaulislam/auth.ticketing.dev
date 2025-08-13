@@ -1,11 +1,9 @@
-import { PrismaClient } from '@prisma/client'
+import { Prisma, PrismaClient, User } from '@prisma/client'
+import { BaseModelService } from '@jiaul.islam/common.ticketing.dev';
+import { DefaultArgs } from '@prisma/client/runtime/library';
 
 const prisma = new PrismaClient();
 
-interface CreateUserDTO {
-  email: string;
-  password: string;
-}
 
 type UserModel = {
   id: number;
@@ -22,37 +20,23 @@ interface UserDTO {
   updatedAt: Date;
 }
 
-export class UserService {
-  async getUserByEmail(email: string) {
-    return prisma.user.findUnique({
-      where: { email: email },
-    });
+export class UserService extends BaseModelService<
+  Prisma.UserDelegate<DefaultArgs>,
+  User,
+  Prisma.UserFindUniqueArgs<DefaultArgs>,
+  Prisma.UserFindManyArgs<DefaultArgs>,
+  Prisma.UserCreateArgs<DefaultArgs>,
+  Prisma.UserUpdateArgs<DefaultArgs>,
+  Prisma.UserDeleteArgs<DefaultArgs>,
+  Prisma.UserCountArgs<DefaultArgs>,
+  Prisma.UserUpsertArgs<DefaultArgs>
+> {
+
+  protected getModel(): Prisma.UserDelegate<DefaultArgs, {}> {
+    return prisma.user;
   }
 
-  async getUserById(userId: number) {
-    return prisma.user.findUnique({
-      where: { id: userId },
-    });
-  }
-
-  async getUsers() {
-    return prisma.user.findMany();
-  }
-
-  async updateUser(userId: number, userData: Partial<UserModel>) {
-    return prisma.user.update({
-      where: { id: userId },
-      data: userData,
-    });
-  }
-
-  async createUser(user: CreateUserDTO) {
-    return prisma.user.create({
-      data: user,
-    });
-  }
-
-  serializeUser(user: UserModel): UserDTO {
+  public serializeUser(user: User): UserDTO {
     return {
       id: user.id,
       email: user.email,
