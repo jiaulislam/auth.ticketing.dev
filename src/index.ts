@@ -1,9 +1,7 @@
 import { app } from "./app";
 
-import { PrismaClient } from "@prisma/client";
 import { UserService } from "./service/user.service";
 
-const prisma = new PrismaClient();
 
 const start = async () => {
   if (!process.env.JWT_KEY) {
