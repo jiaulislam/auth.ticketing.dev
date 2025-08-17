@@ -12,18 +12,24 @@ const start = async () => {
   if (!process.env.DATABASE_URL) {
     throw new Error('DATABASE_URL must be defined');
   }
+  if (!process.env.ADMIN_USER_EMAIL) {
+    throw new Error('ADMIN_USER_EMAIL must be defined');
+  }
+  if (!process.env.ADMIN_USER_PASSWORD) {
+    throw new Error('ADMIN_USER_PASSWORD must be defined');
+  }
   // create a system User here
   const userService = new UserService();
   const adminExists = await userService.findUnique({
     where: {
-      email: 'admin@ticketing.dev',
+      email: process.env.ADMIN_USER_EMAIL,
     },
   });
   if (!adminExists) {
     await userService.create({
       data: {
-        email: 'admin@ticketing.dev',
-        password: 'password',
+        email: process.env.ADMIN_USER_EMAIL,
+        password: process.env.ADMIN_USER_PASSWORD,
       }
     });
   }
