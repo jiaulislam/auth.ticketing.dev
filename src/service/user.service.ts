@@ -1,6 +1,7 @@
 import { Prisma, PrismaClient, User } from '@prisma/client'
 import { BaseModelService } from '@jiaul.islam/common.ticketing.dev';
 import { DefaultArgs } from '@prisma/client/runtime/library';
+import { PasswordService } from './password.service';
 
 const prisma = new PrismaClient();
 
@@ -42,6 +43,12 @@ export class UserService extends BaseModelService<
    */
   protected getModel(): Prisma.UserDelegate<DefaultArgs, {}> {
     return prisma.user;
+  }
+
+  public async create(args: Prisma.UserCreateArgs<DefaultArgs>, delegate?: Prisma.UserDelegate<DefaultArgs, {}> | undefined): Promise<User> {
+    const { email, password } = args.data;
+    const hashedPassword = await PasswordService.toHash(password);
+    return this.getModel().create({ data: { email, password: hashedPassword } });
   }
 
   /**
